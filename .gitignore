@@ -34,7 +34,8 @@ override.tf.json
 terraform.rc
 
 .devops/.secret
-**/**/node_modules
+.env
 
+**/**/node_modules
 **/terraform/zips
 

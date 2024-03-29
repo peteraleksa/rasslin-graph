@@ -1,0 +1,46 @@
+{
+  "name": "rasslin-graph",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "interactive rasslin history",
+  "main": "index.js",
+  "author": "Peter Aleksa <peter.aleksa@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "pipelines/*"
+  ],
+  "scripts": {
+    "postinstall": "husky",
+    "test": "mocha",
+    "gql-dev": "NODE_ENV=development npx tsx ./graphql/server.ts"
+  },
+  "devDependencies": {
+    "@eddeee888/gcg-typescript-resolver-files": "^0.7.3",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.4",
+    "@graphql-codegen/typescript-operations": "^4.1.2",
+    "@graphql-codegen/typescript-resolvers": "^4.0.4",
+    "@types/node": "^20.11.17",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.1"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.10.1",
+    "@neo4j/graphql": "^5.3.1",
+    "graphql": "^16.8.1",
+    "neo4j-driver": "^5.18.0",
+    "tsx": "^4.7.1"
+  }
+}
