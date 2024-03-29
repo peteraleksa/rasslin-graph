@@ -1,0 +1,5 @@
+FROM --platform=linux/amd64 confluentinc/cp-server-connect:7.6.0
+USER root
+RUN  confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:5.0.4
+RUN  confluent-hub install --no-prompt confluentinc/kafka-connect-gcp-functions:1.2.0
+USER 1001
