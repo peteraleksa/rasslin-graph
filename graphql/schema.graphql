@@ -1,0 +1,218 @@
+# noinspection GraphQLMissingType,GraphQLUnresolvedReference
+
+enum MatchResult {
+    PINFALL
+    SUBMISSION
+    DQ
+    COUNT_OUT
+    DOUBLE_COUNT_OUT
+    NO_CONTEST
+}
+
+union Employer = Promotion | Company
+union Owner = Person | Company
+
+interface GraphNode {
+    id: ID!
+}
+
+type Address implements GraphNode {
+    id: ID! @id @unique
+    streetAddress: String! @unique
+    city: City! @relationship(type: "LOCATED_IN", direction: OUT)
+}
+
+type City implements GraphNode {
+    id: ID! @id @unique
+    name: String! @unique
+    state: State! @relationship(type: "LOCATED_IN", direction: OUT)
+}
+
+type Country implements GraphNode {
+    id: ID! @id @unique
+    name: String! @unique
+}
+
+type State implements GraphNode {
+    id: ID! @id @unique
+    name: String! @unique
+    country: Country! @relationship(type: "LOCATED_IN", direction: OUT)
+}
+
+type Arena implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    address: Address @relationship(type: "LOCATED_AT", direction: OUT)
+}
+
+type Article implements GraphNode {
+    id: ID! @id @unique
+    title: String!
+    url: String @unique
+    text: String
+}
+
+type BeltDesign implements GraphNode {
+    id: ID! @id @unique
+    title: Title! @relationship(type: "DESIGN_FOR", direction: IN)
+    imageUri: String!
+    start: Date
+    end: Date
+    precededBy: BeltDesign @relationship(type: "NEXT", direction: IN)
+    followedBy: BeltDesign @relationship(type: "NEXT", direction: OUT)
+}
+
+type Broadcast implements GraphNode {
+    id: ID! @id @unique
+    date: Date!
+    program: TvProgram! @relationship(type: "EPISODE_OF", direction: OUT)
+    next: TvProgram! @relationship(type: "NEXT", direction: OUT)
+    previous: TvProgram! @relationship(type: "NEXT", direction: IN)
+}
+
+type Company implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    owners: [Owner!]! @relationship(type: "OWNED_BY", direction: OUT)
+}
+
+type Era implements GraphNode {
+    id: ID! @id @unique
+    start: Date!
+    end: Date
+}
+
+type Event implements GraphNode {
+    id: ID! @id @unique
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    name: String!
+    date: Date!
+}
+
+type FaceRun implements GraphNode {
+    id: ID! @id @unique
+    start: Date!
+    end: Date!
+    next: HeelRun @relationship(type: "NEXT", direction: OUT)
+    previous: HeelRun @relationship(type: "NEXT", direction: IN)
+}
+
+type HeelRun implements GraphNode {
+    id: ID! @id @unique
+    start: Date!
+    end: Date!
+    next: FaceRun @relationship(type: "NEXT", direction: OUT)
+    previous: FaceRun @relationship(type: "NEXT", direction: IN)
+}
+
+type KayfabePersona implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    portrayedBy: [Person!]! @relationship(type: "PORTRAYED_BY", direction: OUT)
+    titleReigns: [Reign!]! @relationship(type: "REIGN_OF", direction: IN)
+    stables: [Stable!]! @relationship(type: "PART_OF", direction: OUT)
+}
+
+type Match implements GraphNode {
+    id: ID! @id @unique
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    wrestlers: [KayfabePersona!]! @relationship(type: "WRESTLED_IN", direction: OUT)
+    ringside: [KayfabePersona!]! @relationship(type: "RINGSIDE_AT", direction: OUT)
+    interfered: [KayfabePersona!]! @relationship(type: "INTERFERED_IN", direction: OUT)
+    result: MatchResult!
+    turn: Turn! @relationship(type: "TURN_DURING", direction: IN)
+}
+
+type MediaChannel implements GraphNode {
+    id: ID! @id @unique
+    name: String! @unique
+}
+
+type Promo implements GraphNode {
+    id: ID! @id @unique
+    date: Date!
+    event: Event! @relationship(type: "OCCURRED_AT", direction: OUT)
+    turns: [Turn!]! @relationship(type: "TURN_DURING", direction: IN)
+}
+
+type Person implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    characters: [KayfabePersona!]! @relationship(type: "PORTRAYED_BY", direction: IN)
+    employedAt: [Employer!]! @relationship(type: "EMPLOYED_AT", direction: OUT)
+}
+
+type Promotion implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    aka: [String]
+    founded: Date
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    rightsDeals: [RightsDeal!]! @relationship(type: "ENTERED_INTO", direction: OUT)
+}
+
+type Reign implements GraphNode {
+    id: ID! @id @unique
+    title: Title! @relationship(type: "DESIGN_FOR", direction: OUT)
+}
+
+type RightsDeal implements GraphNode {
+    id: ID! @id @unique
+    promotion: Promotion! @relationship(type: "ENTERED_INTO", direction: IN)
+    distribution: [MediaChannel!]! @relationship(type: "ENTERED_INTO", direction: IN)
+    programs: [TvProgram!]! @relationship(type: "PART_OF", direction: IN)
+}
+
+type Stable implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    members: [KayfabePersona!]! @relationship(type: "PART_OF", direction: IN)
+    eras: [Era!]! @relationship(type: "ERA", direction: OUT)
+    turns: [Turn!]! @relationship(type: "TURN", direction: OUT)
+    heelRuns: [HeelRun!]! @relationship(type: "RUN", direction: OUT)
+    faceRuns: [FaceRun!]! @relationship(type: "RUN", direction: OUT)
+}
+
+type TagTeam implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    members: [KayfabePersona!]! @relationship(type: "MEMBER_OF", direction: IN)
+}
+
+type Title implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    designs: [BeltDesign!]! @relationship(type: "DESIGN_FOR", direction: IN)
+}
+
+type Turn implements GraphNode {
+    id: ID! @id @unique
+    event: Event! @relationship(type: "OCCURRED_AT", direction: OUT)
+}
+
+type TvProgram implements GraphNode {
+    id: ID! @id @unique
+    name: String!
+    wikipediaTag: String @unique
+    cagematchTag: String @unique
+    promotion: Promotion! @relationship(type: "PRODUCT_OF", direction: OUT)
+    episodes: [Broadcast!]! @relationship(type: "EPISODE_OF", direction: IN)
+    rightsDeals: [RightsDeal!]! @relationship(type: "RIGHTS_FOR", direction: IN)
+}
+
+
